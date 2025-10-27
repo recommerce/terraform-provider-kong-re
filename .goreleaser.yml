@@ -50,7 +50,8 @@ signs:
       - "--detach-sign"
       - "${artifact}"
 release:
+  draft: false
 # If you want to manually examine the release before its live, uncomment this line:
 # draft: true
 changelog:
-  skip: true
+    disable: true
