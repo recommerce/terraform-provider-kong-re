@@ -81,13 +81,13 @@ func Provider() *schema.Provider {
 			"kong_consumer_jwt_auth":   resourceKongConsumerJWTAuth(),
 		},
 
-		//DataSourcesMap: map[string]*schema.Resource{
-		//	"kong_api":         dataSourceKongApi(),
-		//	"kong_certificate": dataSourceKongCertificate(),
-		//	"kong_consumer":    dataSourceKongConsumer(),
-		//	"kong_plugin":      dataSourceKongPlugin(),
-		//	"kong_upstream":    dataSourceKongUpstream(),
-		//},
+		DataSourcesMap: map[string]*schema.Resource{
+			// "kong_api":         dataSourceKongApi(),
+			// "kong_certificate": dataSourceKongCertificate(),
+			"kong_consumer": dataSourceKongConsumer(),
+			// "kong_plugin":      dataSourceKongPlugin(),
+			// "kong_upstream":    dataSourceKongUpstream(),
+		},
 		ConfigureFunc: providerConfigure,
 	}
 }

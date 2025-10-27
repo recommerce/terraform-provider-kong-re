@@ -15,6 +15,10 @@ func resourceKongConsumerKeyAuth() *schema.Resource {
 		ReadContext:   resourceKongConsumerKeyAuthRead,
 		DeleteContext: resourceKongConsumerKeyAuthDelete,
 		UpdateContext: resourceKongConsumerKeyAuthUpdate,
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+		
 		Schema: map[string]*schema.Schema{
 			"consumer_id": {
 				Type:     schema.TypeString,
