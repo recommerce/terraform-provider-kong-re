@@ -71,36 +71,67 @@ func TestProvider_configure_strict(t *testing.T) {
 }
 
 func TestMain(m *testing.M) {
-	testContext := containers.StartKong(
-		defaultKongRepository,
-		GetEnvVarOrDefault("KONG_VERSION", defaultKongVersion),
-		defaultKongLicense,
-	)
+    // Build the provider binary
+    moduleRoot, _ := filepath.Abs(".")
+    if filepath.Base(moduleRoot) == "kong" {
+        moduleRoot = filepath.Dir(moduleRoot)
+    }
 
-	if err := waitForKongReady(testContext.KongHostAddress); err != nil {
-		log.Fatalf("Kong failed to become ready: %v", err)
-	}
+    binaryPath := filepath.Join(moduleRoot, "terraform-provider-kong")
+    
+    // Build it
+    log.Printf("Building provider at: %s", binaryPath)
+    cmd := exec.Command("go", "build", "-o", binaryPath, ".")
+    cmd.Dir = moduleRoot
+    if output, err := cmd.CombinedOutput(); err != nil {
+        log.Fatalf("Build failed: %v\n%s", err, string(output))
+    }
 
-	err := os.Setenv(EnvKongAdminHostAddress, testContext.KongHostAddress)
-	if err != nil {
-		log.Fatalf("Could not set kong host address env variable: %v", err)
-	}
-	err = os.Setenv(EnvKongAdminUsername, "AnUsername")
-	if err != nil {
-		log.Fatalf("Could not set kong admin username env variable: %v", err)
-	}
-	err = os.Setenv(EnvKongAdminPassword, "AnyPassword")
-	if err != nil {
-		log.Fatalf("Could not set kong admin password env variable: %v", err)
-	}
+    // Test if it works
+    log.Printf("Testing provider binary...")
+    testCmd := exec.Command(binaryPath)
+    testCmd.Env = append(os.Environ(), 
+        "TF_PLUGIN_PROTOCOL_VERSIONS=5",
+    )
+    
+    // Don't wait, just start it
+    if err := testCmd.Start(); err != nil {
+        log.Fatalf("Failed to start provider: %v", err)
+    }
+    log.Printf("Provider started successfully")
+    testCmd.Process.Kill()
 
-	log.Printf("DEBUG: Kong Admin Address set to: %s", testContext.KongHostAddress)
+    // Now setup Kong
+    testContext := containers.StartKong(
+        defaultKongRepository, 
+        GetEnvVarOrDefault("KONG_VERSION", defaultKongVersion), 
+        defaultKongLicense,
+    )
 
-	code := m.Run()
+    if err := waitForKongReady(testContext.KongHostAddress); err != nil {
+        log.Fatalf("Kong failed to become ready: %v", err)
+    }
 
-	containers.StopKong(testContext)
+    err := os.Setenv(EnvKongAdminHostAddress, testContext.KongHostAddress)
+    if err != nil {
+        log.Fatalf("Could not set kong host address env variable: %v", err)
+    }
+    err = os.Setenv(EnvKongAdminUsername, "AnUsername")
+    if err != nil {
+        log.Fatalf("Could not set kong admin username env variable: %v", err)
+    }
+    err = os.Setenv(EnvKongAdminPassword, "AnyPassword")
+    if err != nil {
+        log.Fatalf("Could not set kong admin password env variable: %v", err)
+    }
 
-	os.Exit(code)
+    log.Printf("DEBUG: Kong Admin Address set to: %s", testContext.KongHostAddress)
+
+    code := m.Run()
+
+    containers.StopKong(testContext)
+
+    os.Exit(code)
 }
 
 // Add this helper function
