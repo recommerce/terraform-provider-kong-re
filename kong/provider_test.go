@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -71,6 +73,15 @@ func TestProvider_configure_strict(t *testing.T) {
 }
 
 func TestMain(m *testing.M) {
+	// Build the provider binary
+	if err := buildProviderBinary(); err != nil {
+		log.Fatalf("Failed to build provider binary: %v", err)
+	}
+
+	// Setup Terraform dev overrides
+	if err := setupTerraformOverrides(); err != nil {
+		log.Fatalf("Failed to setup Terraform overrides: %v", err)
+	}
 
 	testContext := containers.StartKong(defaultKongRepository, GetEnvVarOrDefault("KONG_VERSION", defaultKongVersion), defaultKongLicense)
 
@@ -102,6 +113,58 @@ func TestMain(m *testing.M) {
 
 	os.Exit(code)
 
+}
+
+func buildProviderBinary() error {
+	// Get the module root directory
+	moduleRoot, err := os.Getwd()
+	if err != nil {
+		return fmt.Errorf("failed to get working directory: %w", err)
+	}
+
+	binaryPath := filepath.Join(moduleRoot, "terraform-provider-kong")
+
+	log.Printf("DEBUG: Building provider binary at %s", binaryPath)
+
+	cmd := exec.Command("go", "build", "-o", binaryPath, "./kong")
+	cmd.Dir = moduleRoot
+
+	if output, err := cmd.CombinedOutput(); err != nil {
+		return fmt.Errorf("failed to build provider: %w\nOutput: %s", err, string(output))
+	}
+
+	log.Printf("DEBUG: Provider binary built successfully at %s", binaryPath)
+	return nil
+}
+
+func setupTerraformOverrides() error {
+    moduleRoot, err := os.Getwd()
+    if err != nil {
+        return fmt.Errorf("failed to get working directory: %w", err)
+    }
+
+    homeDir, err := os.UserHomeDir()
+    if err != nil {
+        return fmt.Errorf("failed to get home directory: %w", err)
+    }
+
+    terraformrcPath := filepath.Join(homeDir, ".terraformrc")
+    
+    terraformrc := fmt.Sprintf(`
+provider_installation {
+  dev_overrides {
+    "kevholditch/kong" = "%s"
+  }
+  direct {}
+}
+`, moduleRoot)
+
+    if err := os.WriteFile(terraformrcPath, []byte(terraformrc), 0600); err != nil {
+        return fmt.Errorf("failed to write .terraformrc: %w", err)
+    }
+
+    log.Printf("DEBUG: Terraform overrides written to %s", terraformrcPath)
+    return nil
 }
 
 // Add this helper function
