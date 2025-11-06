@@ -83,6 +83,10 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		log.Fatalf("Could not set kong host address env variable: %v", err)
 	}
+
+	// DEBUG: Print what Kong URL we're using
+	log.Printf("DEBUG: Kong Admin Address set to: %s", testContext.KongHostAddress)
+
 	err = os.Setenv(EnvKongAdminPassword, "AnUsername")
 	if err != nil {
 		log.Fatalf("Could not set kong admin username env variable: %v", err)
@@ -106,14 +110,24 @@ func waitForKongReady(kongURL string) error {
 		Timeout: 5 * time.Second,
 	}
 
+	log.Printf("DEBUG: Waiting for Kong at %s", kongURL)
 	maxRetries := 30
 	for i := 0; i < maxRetries; i++ {
 		resp, err := client.Get(kongURL + "/status")
-		if err == nil && resp.StatusCode == 200 {
+		if err != nil {
+			log.Printf("DEBUG: Attempt %d - Error: %v", i+1, err)
+			time.Sleep(1 * time.Second)
+			continue
+		}
+
+		if resp.StatusCode == 200 {
 			resp.Body.Close()
-			log.Printf("Kong is ready at %s", kongURL)
+			log.Printf("DEBUG: Kong is ready at %s", kongURL)
 			return nil
 		}
+
+		log.Printf("DEBUG: Attempt %d - Status: %d", i+1, resp.StatusCode)
+		resp.Body.Close()
 		time.Sleep(1 * time.Second)
 	}
 
