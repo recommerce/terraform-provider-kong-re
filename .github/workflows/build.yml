@@ -5,11 +5,12 @@ on:
       - develop
       - stage
       - master
+      - 'feature/*'
 
 jobs:
   build:
     name: building gokong
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, amd64, small]
 
     steps:
     - uses: actions/checkout@v2
