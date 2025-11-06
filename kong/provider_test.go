@@ -2,7 +2,6 @@ package kong
 
 import (
 	"context"
-	"exec"
 	"fmt"
 	"log"
 	"net/http"
