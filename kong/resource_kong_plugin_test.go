@@ -13,7 +13,7 @@ import (
 func TestAccKongGlobalPlugin(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		ProtoV6ProviderFactories: testAccProviderFactories,
 		CheckDestroy: testAccCheckKongPluginDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -39,7 +39,7 @@ func TestAccKongGlobalPlugin(t *testing.T) {
 func TestAccKongGlobalPluginDisabled(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		ProtoV6ProviderFactories: testAccProviderFactories,
 		CheckDestroy: testAccCheckKongPluginDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -57,7 +57,7 @@ func TestAccKongGlobalPluginDisabled(t *testing.T) {
 func TestAccKongPluginForASpecificConsumer(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		ProtoV6ProviderFactories: testAccProviderFactories,
 		CheckDestroy: testAccCheckKongPluginDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -87,7 +87,7 @@ func TestAccKongPluginForASpecificConsumer(t *testing.T) {
 func TestAccKongPluginForASpecificService(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		ProtoV6ProviderFactories: testAccProviderFactories,
 		CheckDestroy: testAccCheckKongPluginDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -120,7 +120,7 @@ func TestAccKongPluginForASpecificService(t *testing.T) {
 func TestAccKongPluginForASpecificRoute(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		ProtoV6ProviderFactories: testAccProviderFactories,
 		CheckDestroy: testAccCheckKongPluginDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -150,7 +150,7 @@ func TestAccKongPluginForASpecificRoute(t *testing.T) {
 func TestAccKongPluginImportConfigJson(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		ProtoV6ProviderFactories: testAccProviderFactories,
 		CheckDestroy: testAccCheckKongPluginDestroy,
 		Steps: []resource.TestStep{
 			{

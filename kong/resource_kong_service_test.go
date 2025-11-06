@@ -12,7 +12,7 @@ import (
 
 func TestAccKongService(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		ProtoV6ProviderFactories: testAccProviderFactories,
 		CheckDestroy: testAccCheckKongServiceDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -57,7 +57,7 @@ func TestAccKongService(t *testing.T) {
 
 func TestAccKongDefaultService(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		ProtoV6ProviderFactories: testAccProviderFactories,
 		CheckDestroy: testAccCheckKongServiceDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -80,7 +80,7 @@ func TestAccKongDefaultService(t *testing.T) {
 
 func TestAccKongServiceWithClientCertificate(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		ProtoV6ProviderFactories: testAccProviderFactories,
 		CheckDestroy: testAccCheckKongServiceDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -143,7 +143,7 @@ func TestAccKongServiceWithClientCertificate(t *testing.T) {
 func TestAccKongServiceImport(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		ProtoV6ProviderFactories: testAccProviderFactories,
 		CheckDestroy: testAccCheckKongServiceDestroy,
 		Steps: []resource.TestStep{
 			resource.TestStep{

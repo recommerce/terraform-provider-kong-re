@@ -14,7 +14,7 @@ import (
 func TestAccKongUpstream(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		ProtoV6ProviderFactories: testAccProviderFactories,
 		CheckDestroy: testAccCheckKongUpstreamDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -157,7 +157,7 @@ func TestAccKongUpstream(t *testing.T) {
 func TestAccKongUpstreamImport(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		ProtoV6ProviderFactories: testAccProviderFactories,
 		CheckDestroy: testAccCheckKongUpstreamDestroy,
 		Steps: []resource.TestStep{
 			resource.TestStep{

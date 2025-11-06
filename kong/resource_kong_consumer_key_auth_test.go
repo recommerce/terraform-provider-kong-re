@@ -13,7 +13,7 @@ import (
 func TestAccConsumerKeyAuth(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		ProtoV6ProviderFactories: testAccProviderFactories,
 		CheckDestroy: testAccCheckConsumerKeyAuthDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -42,7 +42,7 @@ func TestAccConsumerKeyAuth(t *testing.T) {
 func TestAccConsumerKeyAuthComputed(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		ProtoV6ProviderFactories: testAccProviderFactories,
 		CheckDestroy: testAccCheckConsumerKeyAuthDestroy,
 		Steps: []resource.TestStep{
 			{

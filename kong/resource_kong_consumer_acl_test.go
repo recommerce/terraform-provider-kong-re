@@ -13,7 +13,7 @@ import (
 func TestAccConsumerACL(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		ProtoV6ProviderFactories: testAccProviderFactories,
 		CheckDestroy: testAccCheckConsumerACLDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -42,7 +42,7 @@ func TestAccConsumerACL(t *testing.T) {
 func TestAccConsumerACLImport(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		Providers:    testAccProviders,
+		ProtoV6ProviderFactories: testAccProviderFactories,
 		CheckDestroy: testAccCheckConsumerACLDestroy,
 		Steps: []resource.TestStep{
 			{

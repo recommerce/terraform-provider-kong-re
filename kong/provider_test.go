@@ -6,8 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"os/exec"
-	"path/filepath"
 	"testing"
 	"time"
 
@@ -73,19 +71,12 @@ func TestProvider_configure_strict(t *testing.T) {
 }
 
 func TestMain(m *testing.M) {
-	// Build the provider binary
-	if err := buildProviderBinary(); err != nil {
-		log.Fatalf("Failed to build provider binary: %v", err)
-	}
+	testContext := containers.StartKong(
+		defaultKongRepository,
+		GetEnvVarOrDefault("KONG_VERSION", defaultKongVersion),
+		defaultKongLicense,
+	)
 
-	// Setup Terraform dev overrides
-	if err := setupTerraformOverrides(); err != nil {
-		log.Fatalf("Failed to setup Terraform overrides: %v", err)
-	}
-
-	testContext := containers.StartKong(defaultKongRepository, GetEnvVarOrDefault("KONG_VERSION", defaultKongVersion), defaultKongLicense)
-
-	// Wait for Kong to be ready
 	if err := waitForKongReady(testContext.KongHostAddress); err != nil {
 		log.Fatalf("Kong failed to become ready: %v", err)
 	}
@@ -94,11 +85,7 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		log.Fatalf("Could not set kong host address env variable: %v", err)
 	}
-
-	// DEBUG: Print what Kong URL we're using
-	log.Printf("DEBUG: Kong Admin Address set to: %s", testContext.KongHostAddress)
-
-	err = os.Setenv(EnvKongAdminPassword, "AnUsername")
+	err = os.Setenv(EnvKongAdminUsername, "AnUsername")
 	if err != nil {
 		log.Fatalf("Could not set kong admin username env variable: %v", err)
 	}
@@ -107,79 +94,13 @@ func TestMain(m *testing.M) {
 		log.Fatalf("Could not set kong admin password env variable: %v", err)
 	}
 
+	log.Printf("DEBUG: Kong Admin Address set to: %s", testContext.KongHostAddress)
+
 	code := m.Run()
 
 	containers.StopKong(testContext)
 
 	os.Exit(code)
-
-}
-
-func buildProviderBinary() error {
-	// Find the repo root (go up from ./kong to parent)
-	currentDir, err := os.Getwd()
-	if err != nil {
-		return fmt.Errorf("failed to get working directory: %w", err)
-	}
-
-	// If we're in ./kong, go up one level to find go.mod
-	moduleRoot := currentDir
-	if filepath.Base(currentDir) == "kong" {
-		moduleRoot = filepath.Dir(currentDir)
-	}
-
-	binaryPath := filepath.Join(moduleRoot, "terraform-provider-kong")
-
-	log.Printf("DEBUG: Current dir: %s", currentDir)
-	log.Printf("DEBUG: Repo root: %s", moduleRoot)
-	log.Printf("DEBUG: Building provider binary at %s", binaryPath)
-
-	// Build from repo root, using ./main.go
-	cmd := exec.Command("go", "build", "-o", binaryPath, ".")
-	cmd.Dir = moduleRoot
-
-	if output, err := cmd.CombinedOutput(); err != nil {
-		return fmt.Errorf("failed to build provider: %w\nOutput: %s", err, string(output))
-	}
-
-	log.Printf("DEBUG: Provider binary built successfully")
-	return nil
-}
-
-func setupTerraformOverrides() error {
-	currentDir, err := os.Getwd()
-	if err != nil {
-		return fmt.Errorf("failed to get working directory: %w", err)
-	}
-
-	// If we're in ./kong, go up one level
-	moduleRoot := currentDir
-	if filepath.Base(currentDir) == "kong" {
-		moduleRoot = filepath.Dir(currentDir)
-	}
-
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return fmt.Errorf("failed to get home directory: %w", err)
-	}
-
-	terraformrcPath := filepath.Join(homeDir, ".terraformrc")
-
-	terraformrc := fmt.Sprintf(`provider_installation {
-  dev_overrides {
-    "kevholditch/kong" = "%s"
-  }
-  direct {}
-}
-`, moduleRoot)
-
-	if err := os.WriteFile(terraformrcPath, []byte(terraformrc), 0600); err != nil {
-		return fmt.Errorf("failed to write .terraformrc: %w", err)
-	}
-
-	log.Printf("DEBUG: Terraform overrides written to %s", terraformrcPath)
-	log.Printf("DEBUG: Provider path override: %s", moduleRoot)
-	return nil
 }
 
 // Add this helper function
