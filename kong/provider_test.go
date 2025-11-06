@@ -2,9 +2,12 @@ package kong
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
@@ -71,6 +74,11 @@ func TestMain(m *testing.M) {
 
 	testContext := containers.StartKong(defaultKongRepository, GetEnvVarOrDefault("KONG_VERSION", defaultKongVersion), defaultKongLicense)
 
+	// Wait for Kong to be ready
+	if err := waitForKongReady(testContext.KongHostAddress); err != nil {
+		log.Fatalf("Kong failed to become ready: %v", err)
+	}
+
 	err := os.Setenv(EnvKongAdminHostAddress, testContext.KongHostAddress)
 	if err != nil {
 		log.Fatalf("Could not set kong host address env variable: %v", err)
@@ -90,4 +98,24 @@ func TestMain(m *testing.M) {
 
 	os.Exit(code)
 
+}
+
+// Add this helper function
+func waitForKongReady(kongURL string) error {
+	client := &http.Client{
+		Timeout: 5 * time.Second,
+	}
+
+	maxRetries := 30
+	for i := 0; i < maxRetries; i++ {
+		resp, err := client.Get(kongURL + "/status")
+		if err == nil && resp.StatusCode == 200 {
+			resp.Body.Close()
+			log.Printf("Kong is ready at %s", kongURL)
+			return nil
+		}
+		time.Sleep(1 * time.Second)
+	}
+
+	return fmt.Errorf("Kong not ready after %d seconds at %s", maxRetries, kongURL)
 }
