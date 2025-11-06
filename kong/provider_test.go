@@ -88,34 +88,37 @@ func TestMain(m *testing.M) {
 
 	log.Printf("Provider binary built successfully")
 
-	// DEBUG: Verify binary exists and is executable
+	// Verify binary works
 	fileInfo, err := os.Stat(binaryPath)
 	if err != nil {
 		log.Fatalf("Provider binary not found: %v", err)
 	}
 	log.Printf("DEBUG: Binary size: %d bytes, permissions: %o", fileInfo.Size(), fileInfo.Mode())
 
-	// Set up .terraformrc to use local provider - use BINARY PATH not directory!
+	// Set up .terraformrc
 	homeDir, _ := os.UserHomeDir()
 	terraformrcPath := filepath.Join(homeDir, ".terraformrc")
+
+	// Use simple format without dev_overrides - just point directly
 	terraformrc := fmt.Sprintf(`provider_installation {
   dev_overrides {
     "kong" = "%s"
   }
-  direct {}
+  direct {
+    exclude = ["kong"]
+  }
 }
-`, binaryPath) // ← Changed from moduleRoot to binaryPath
+`, binaryPath)
 
 	if err := os.WriteFile(terraformrcPath, []byte(terraformrc), 0600); err != nil {
 		log.Fatalf("Failed to write .terraformrc: %v", err)
 	}
 
-	log.Printf("Terraform dev overrides set to: %s", binaryPath)
-
-	// DEBUG: Verify .terraformrc was written
+	log.Printf("Terraform config written to: %s", terraformrcPath)
 	content, _ := os.ReadFile(terraformrcPath)
 	log.Printf("DEBUG: .terraformrc content:\n%s", string(content))
 
+	// Rest of TestMain...
 	testContext := containers.StartKong(
 		defaultKongRepository,
 		GetEnvVarOrDefault("KONG_VERSION", defaultKongVersion),
