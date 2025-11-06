@@ -88,6 +88,13 @@ func TestMain(m *testing.M) {
 
 	log.Printf("Provider binary built successfully")
 
+	// DEBUG: Verify binary exists and is executable
+	fileInfo, err := os.Stat(binaryPath)
+	if err != nil {
+		log.Fatalf("Provider binary not found: %v", err)
+	}
+	log.Printf("DEBUG: Binary size: %d bytes, permissions: %o", fileInfo.Size(), fileInfo.Mode())
+
 	// Set up .terraformrc to use local provider
 	homeDir, _ := os.UserHomeDir()
 	terraformrcPath := filepath.Join(homeDir, ".terraformrc")
@@ -98,8 +105,21 @@ func TestMain(m *testing.M) {
   direct {}
 }
 `, moduleRoot)
-	os.WriteFile(terraformrcPath, []byte(terraformrc), 0600)
+
+	if err := os.WriteFile(terraformrcPath, []byte(terraformrc), 0600); err != nil {
+		log.Fatalf("Failed to write .terraformrc: %v", err)
+	}
+
 	log.Printf("Terraform dev overrides set to: %s", moduleRoot)
+
+	// DEBUG: Verify .terraformrc was written
+	content, _ := os.ReadFile(terraformrcPath)
+	log.Printf("DEBUG: .terraformrc content:\n%s", string(content))
+
+	// DEBUG: Try to execute provider
+	testCmd := exec.Command(binaryPath, "-version")
+	testOutput, testErr := testCmd.CombinedOutput()
+	log.Printf("DEBUG: Provider -version output: %s (err: %v)", string(testOutput), testErr)
 
 	testContext := containers.StartKong(
 		defaultKongRepository,
@@ -111,7 +131,7 @@ func TestMain(m *testing.M) {
 		log.Fatalf("Kong failed to become ready: %v", err)
 	}
 
-	err := os.Setenv(EnvKongAdminHostAddress, testContext.KongHostAddress)
+	err = os.Setenv(EnvKongAdminHostAddress, testContext.KongHostAddress)
 	if err != nil {
 		log.Fatalf("Could not set kong host address env variable: %v", err)
 	}
