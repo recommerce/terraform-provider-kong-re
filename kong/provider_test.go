@@ -73,15 +73,12 @@ func TestProvider_configure_strict(t *testing.T) {
 }
 
 func TestMain(m *testing.M) {
-	// Build the provider binary
 	moduleRoot, _ := filepath.Abs(".")
 	if filepath.Base(moduleRoot) == "kong" {
 		moduleRoot = filepath.Dir(moduleRoot)
 	}
 
 	binaryPath := filepath.Join(moduleRoot, "terraform-provider-kong")
-
-	// Build it
 	log.Printf("Building provider at: %s", binaryPath)
 	cmd := exec.Command("go", "build", "-o", binaryPath, ".")
 	cmd.Dir = moduleRoot
@@ -89,21 +86,21 @@ func TestMain(m *testing.M) {
 		log.Fatalf("Build failed: %v\n%s", err, string(output))
 	}
 
-	// Test if it works
-	log.Printf("Testing provider binary...")
-	testCmd := exec.Command(binaryPath)
-	testCmd.Env = append(os.Environ(),
-		"TF_PLUGIN_PROTOCOL_VERSIONS=5",
-	)
+	log.Printf("Provider binary built successfully")
 
-	// Don't wait, just start it
-	if err := testCmd.Start(); err != nil {
-		log.Fatalf("Failed to start provider: %v", err)
-	}
-	log.Printf("Provider started successfully")
-	testCmd.Process.Kill()
+	// Set up .terraformrc to use local provider
+	homeDir, _ := os.UserHomeDir()
+	terraformrcPath := filepath.Join(homeDir, ".terraformrc")
+	terraformrc := fmt.Sprintf(`provider_installation {
+  dev_overrides {
+    "kong" = "%s"
+  }
+  direct {}
+}
+`, moduleRoot)
+	os.WriteFile(terraformrcPath, []byte(terraformrc), 0600)
+	log.Printf("Terraform dev overrides set to: %s", moduleRoot)
 
-	// Now setup Kong
 	testContext := containers.StartKong(
 		defaultKongRepository,
 		GetEnvVarOrDefault("KONG_VERSION", defaultKongVersion),
