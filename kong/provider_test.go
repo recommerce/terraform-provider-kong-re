@@ -116,42 +116,56 @@ func TestMain(m *testing.M) {
 }
 
 func buildProviderBinary() error {
-	// Get the module root directory
-	moduleRoot, err := os.Getwd()
+	// Find the repo root (go up from ./kong to parent)
+	currentDir, err := os.Getwd()
 	if err != nil {
 		return fmt.Errorf("failed to get working directory: %w", err)
 	}
 
+	// If we're in ./kong, go up one level to find go.mod
+	moduleRoot := currentDir
+	if filepath.Base(currentDir) == "kong" {
+		moduleRoot = filepath.Dir(currentDir)
+	}
+
 	binaryPath := filepath.Join(moduleRoot, "terraform-provider-kong")
 
+	log.Printf("DEBUG: Current dir: %s", currentDir)
+	log.Printf("DEBUG: Repo root: %s", moduleRoot)
 	log.Printf("DEBUG: Building provider binary at %s", binaryPath)
 
-	cmd := exec.Command("go", "build", "-o", binaryPath, "./kong")
+	// Build from repo root, using ./main.go
+	cmd := exec.Command("go", "build", "-o", binaryPath, ".")
 	cmd.Dir = moduleRoot
 
 	if output, err := cmd.CombinedOutput(); err != nil {
 		return fmt.Errorf("failed to build provider: %w\nOutput: %s", err, string(output))
 	}
 
-	log.Printf("DEBUG: Provider binary built successfully at %s", binaryPath)
+	log.Printf("DEBUG: Provider binary built successfully")
 	return nil
 }
 
 func setupTerraformOverrides() error {
-    moduleRoot, err := os.Getwd()
-    if err != nil {
-        return fmt.Errorf("failed to get working directory: %w", err)
-    }
+	currentDir, err := os.Getwd()
+	if err != nil {
+		return fmt.Errorf("failed to get working directory: %w", err)
+	}
 
-    homeDir, err := os.UserHomeDir()
-    if err != nil {
-        return fmt.Errorf("failed to get home directory: %w", err)
-    }
+	// If we're in ./kong, go up one level
+	moduleRoot := currentDir
+	if filepath.Base(currentDir) == "kong" {
+		moduleRoot = filepath.Dir(currentDir)
+	}
 
-    terraformrcPath := filepath.Join(homeDir, ".terraformrc")
-    
-    terraformrc := fmt.Sprintf(`
-provider_installation {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return fmt.Errorf("failed to get home directory: %w", err)
+	}
+
+	terraformrcPath := filepath.Join(homeDir, ".terraformrc")
+
+	terraformrc := fmt.Sprintf(`provider_installation {
   dev_overrides {
     "kevholditch/kong" = "%s"
   }
@@ -159,12 +173,13 @@ provider_installation {
 }
 `, moduleRoot)
 
-    if err := os.WriteFile(terraformrcPath, []byte(terraformrc), 0600); err != nil {
-        return fmt.Errorf("failed to write .terraformrc: %w", err)
-    }
+	if err := os.WriteFile(terraformrcPath, []byte(terraformrc), 0600); err != nil {
+		return fmt.Errorf("failed to write .terraformrc: %w", err)
+	}
 
-    log.Printf("DEBUG: Terraform overrides written to %s", terraformrcPath)
-    return nil
+	log.Printf("DEBUG: Terraform overrides written to %s", terraformrcPath)
+	log.Printf("DEBUG: Provider path override: %s", moduleRoot)
+	return nil
 }
 
 // Add this helper function
