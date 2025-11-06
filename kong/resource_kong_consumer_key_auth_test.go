@@ -123,6 +123,14 @@ func testAccCheckConsumerKeyAuthExists(resourceKey string) resource.TestCheckFun
 }
 
 const testCreateConsumerKeyAuthConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_consumer" "my_consumer" {
 	username  = "User1"
 	custom_id = "123"
@@ -139,6 +147,14 @@ resource "kong_consumer_key_auth" "consumer_key_auth" {
 }
 `
 const testUpdateConsumerKeyAuthConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_consumer" "my_consumer" {
 	username  = "User1"
 	custom_id = "123"

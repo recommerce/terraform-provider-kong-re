@@ -211,6 +211,14 @@ func testAccCheckKongServiceExists(resourceKey string) resource.TestCheckFunc {
 }
 
 const testCreateServiceConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_service" "service" {
 	name     		 = "test"
 	protocol 		 = "http"
@@ -224,6 +232,14 @@ resource "kong_service" "service" {
 }
 `
 const testUpdateServiceConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_service" "service" {
 	name     		 = "test2"
 	protocol 		 = "https"
@@ -265,6 +281,14 @@ resource "kong_service" "service" {
 `
 
 const testServiceWithClientCertificateConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_certificate" "certificate" {
 	certificate  = <<EOF
 %s
@@ -294,6 +318,14 @@ resource "kong_service" "service" {
 }`
 
 const testImportServiceConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_service" "service" {
 	name     		= "test"
 	protocol 		= "http"

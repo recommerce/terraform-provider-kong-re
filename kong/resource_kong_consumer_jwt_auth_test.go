@@ -118,6 +118,14 @@ func testAccCheckJWTAuthExists(resourceKey string) resource.TestCheckFunc {
 }
 
 const testCreateJWTAuthConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_consumer" "my_consumer" {
 	username  = "User1"
 	custom_id = "123"
@@ -142,6 +150,14 @@ resource "kong_consumer_jwt_auth" "consumer_jwt_config" {
 }
 `
 const testUpdateJWTAuthConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_consumer" "my_consumer" {
 	username  = "User1"
 	custom_id = "123"

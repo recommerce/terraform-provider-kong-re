@@ -198,6 +198,14 @@ func testAccCheckKongRouteExists(resourceKey string) resource.TestCheckFunc {
 }
 
 const testCreateRouteConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_service" "service" {
 	name     = "test"
 	protocol = "http"
@@ -230,6 +238,14 @@ resource "kong_route" "route" {
 }
 `
 const testUpdateRouteConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_service" "service" {
 	name     = "test"
 	protocol = "http"
@@ -259,6 +275,14 @@ resource "kong_route" "route" {
 `
 
 const testCreateRouteWithSourcesAndDestinationsConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_service" "service" {
 	name     = "test"
 	protocol = "http"
@@ -287,6 +311,14 @@ resource "kong_route" "route" {
 `
 
 const testUpdateRouteWithSourcesAndDestinationsConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_service" "service" {
 	name     = "test"
 	protocol = "http"
@@ -314,6 +346,14 @@ resource "kong_route" "route" {
 }
 `
 const testImportRouteConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_service" "service" {
 	name     = "test"
 	protocol = "http"

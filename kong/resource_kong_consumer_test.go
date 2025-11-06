@@ -133,6 +133,14 @@ func testAccCheckKongConsumerExists(resourceKey string) resource.TestCheckFunc {
 }
 
 const testCreateConsumerConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_consumer" "consumer" {
 	username  = "User1"
 	custom_id = "123"
@@ -140,6 +148,14 @@ resource "kong_consumer" "consumer" {
 }
 `
 const testUpdateConsumerConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_consumer" "consumer" {
 	username  = "User2"
 	custom_id = "456"

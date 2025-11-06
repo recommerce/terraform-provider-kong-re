@@ -104,6 +104,14 @@ func testAccCheckConsumerOAuth2Exists(resourceKey string) resource.TestCheckFunc
 }
 
 const testCreateConsumerOAuth2Config = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_consumer" "my_consumer" {
 	username  = "User1"
 	custom_id = "123"
@@ -132,6 +140,14 @@ resource "kong_consumer_oauth2" "consumer_oauth2" {
 }
 `
 const testUpdateConsumerOAuth2Config = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_consumer" "my_consumer" {
 	username  = "User1"
 	custom_id = "123"

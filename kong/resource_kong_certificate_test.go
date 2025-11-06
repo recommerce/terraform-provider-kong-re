@@ -113,6 +113,14 @@ func testAccCheckKongCertificateExists(resourceKey string) resource.TestCheckFun
 }
 
 const testCreateCertificateConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_certificate" "certificate" {
 	certificate  = <<EOF
 %s
@@ -125,6 +133,14 @@ EOF
 }
 `
 const testUpdateCertificateConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_certificate" "certificate" {
 	certificate  = <<EOF
 %s

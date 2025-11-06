@@ -112,6 +112,14 @@ func testAccCheckConsumerACLExists(resourceKey string) resource.TestCheckFunc {
 }
 
 const testCreateConsumerACLConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_consumer" "my_consumer" {
 	username  = "User1"
 	custom_id = "123"
@@ -133,6 +141,14 @@ resource "kong_consumer_acl" "consumer_acl" {
 }
 `
 const testUpdateConsumerACLConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_consumer" "my_consumer" {
 	username  = "User1"
 	custom_id = "123"

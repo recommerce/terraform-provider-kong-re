@@ -1069,12 +1069,28 @@ func TestFlattenPassiveUnhealthy(t *testing.T) {
 }
 
 const testCreateUpstreamConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_upstream" "upstream" {
 	name  		= "MyUpstream"
 	slots 		= 10
 }
 `
 const testUpdateUpstreamConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_certificate" "certificate" {
 	certificate  = <<EOF
 %s

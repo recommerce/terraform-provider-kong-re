@@ -252,6 +252,14 @@ func testAccCheckKongPluginExists(resourceKey string) resource.TestCheckFunc {
 }
 
 const testCreateGlobalPluginConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_plugin" "hmac_auth" {
 	name  = "hmac-auth"
 	enabled = "true"
@@ -294,6 +302,14 @@ EOT
 `
 
 const testUpdateGlobalPluginConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_plugin" "hmac_auth" {
 	name  = "hmac-auth"
 	config_json = <<EOT
@@ -314,6 +330,14 @@ EOT
 `
 
 const testCreatePluginForASpecificConsumerConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_consumer" "plugin_consumer" {
 	username  = "PluginUser"
 	custom_id = "567"
@@ -332,6 +356,14 @@ EOT
 `
 
 const testUpdatePluginForASpecificConsumerConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_consumer" "plugin_consumer" {
 	username  = "PluginUser"
 	custom_id = "567"
@@ -350,6 +382,14 @@ EOT
 `
 
 const testCreatePluginForASpecificServiceConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_service" "service" {
 	name     = "test"
 	protocol = "http"
@@ -371,6 +411,14 @@ EOT
 `
 
 const testUpdatePluginForASpecificServiceConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_service" "service" {
 	name     = "test"
 	protocol = "http"
@@ -391,6 +439,14 @@ EOT
 `
 
 const testCreatePluginForASpecificRouteConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_service" "service" {
 	name     = "test"
 	protocol = "http"
@@ -420,6 +476,14 @@ EOT
 `
 
 const testUpdatePluginForASpecificRouteConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_service" "service" {
 	name     = "test"
 	protocol = "http"
@@ -450,6 +514,14 @@ EOT
 `
 
 const testImportPluginForASpecificApiConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_api" "api" {
 	name 	= "TestApi"
   	hosts   = [ "example.com" ]

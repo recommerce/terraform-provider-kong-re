@@ -77,6 +77,14 @@ func TestAccKongPluginImportConfigJsonStrict(t *testing.T) {
 }
 
 const testCreateExplicitStrictGlobalPluginConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_plugin" "hmac_auth" {
 	name  = "hmac-auth"
 	enabled = "true"
@@ -99,6 +107,14 @@ EOT
 }`
 
 const testCreateImplicitStrictGlobalPluginConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 provider "kong" {
     strict_plugins_match = "true"
 }
@@ -124,6 +140,14 @@ EOT
 }`
 
 const testUpdateExplicitStrictGlobalPluginConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_plugin" "hmac_auth" {
 	name  = "hmac-auth"
     strict_match = true
@@ -145,6 +169,14 @@ EOT
 }`
 
 const testUpdateImplicitStrictGlobalPluginConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 provider "kong" {
     strict_plugins_match = "true"
 }

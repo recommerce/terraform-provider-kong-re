@@ -220,6 +220,14 @@ func deleteUpstream(upstreamResourceKey string) resource.TestCheckFunc {
 }
 
 const testCreateTargetConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_upstream" "upstream" {
 	name				= "MyUpstream"
 	slots				= 10
@@ -233,6 +241,14 @@ resource "kong_target" "target" {
 }
 `
 const testUpdateTargetConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_upstream" "upstream" {
 	name				= "MyUpstream"
 	slots 			= 10
@@ -246,6 +262,14 @@ resource "kong_target" "target" {
 }
 `
 const testDeleteTargetConfig = `
+terraform {
+  required_providers {
+    kong = {
+      source = "kong"
+    }
+  }
+}
+
 resource "kong_upstream" "upstream" {
 	name				= "MyUpstream"
 	slots				= 10
