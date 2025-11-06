@@ -13,7 +13,7 @@ import (
 func TestAccKongCertificate(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		ProtoV6ProviderFactories: testAccProviderFactories,
+		Providers: testAccProviders,
 		CheckDestroy: testAccCheckKongCertificateDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -44,7 +44,7 @@ func TestAccKongCertificate(t *testing.T) {
 func TestAccKongCertificateImport(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		ProtoV6ProviderFactories: testAccProviderFactories,
+		Providers: testAccProviders,
 		CheckDestroy: testAccCheckKongCertificateDestroy,
 		Steps: []resource.TestStep{
 			{

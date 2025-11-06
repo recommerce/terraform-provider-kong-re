@@ -13,7 +13,7 @@ import (
 func TestAccConsumerOAuth2(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		ProtoV6ProviderFactories: testAccProviderFactories,
+		Providers: testAccProviders,
 		CheckDestroy: testAccCheckConsumerOAuth2Destroy,
 		Steps: []resource.TestStep{
 			{

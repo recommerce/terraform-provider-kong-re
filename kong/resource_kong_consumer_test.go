@@ -13,7 +13,7 @@ import (
 func TestAccKongConsumer(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		ProtoV6ProviderFactories: testAccProviderFactories,
+		Providers: testAccProviders,
 		CheckDestroy: testAccCheckKongConsumerDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -44,7 +44,7 @@ func TestAccKongConsumer(t *testing.T) {
 func TestAccKongConsumerNilIDs(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		ProtoV6ProviderFactories: testAccProviderFactories,
+		Providers: testAccProviders,
 		CheckDestroy: testAccCheckKongConsumerDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -64,7 +64,7 @@ func TestAccKongConsumerNilIDs(t *testing.T) {
 func TestAccKongConsumerImport(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		ProtoV6ProviderFactories: testAccProviderFactories,
+		Providers: testAccProviders,
 		CheckDestroy: testAccCheckKongConsumerDestroy,
 		Steps: []resource.TestStep{
 			resource.TestStep{

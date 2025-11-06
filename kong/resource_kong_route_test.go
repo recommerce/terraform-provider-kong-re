@@ -12,7 +12,7 @@ import (
 
 func TestAccKongRoute(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		ProtoV6ProviderFactories: testAccProviderFactories,
+		Providers: testAccProviders,
 		CheckDestroy: testAccCheckKongRouteDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -82,7 +82,7 @@ func TestAccKongRoute(t *testing.T) {
 
 func TestAccKongRouteWithSourcesAndDestinations(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		ProtoV6ProviderFactories: testAccProviderFactories,
+		Providers: testAccProviders,
 		CheckDestroy: testAccCheckKongRouteDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -130,7 +130,7 @@ func TestAccKongRouteWithSourcesAndDestinations(t *testing.T) {
 func TestAccKongRouteImport(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		ProtoV6ProviderFactories: testAccProviderFactories,
+		Providers: testAccProviders,
 		CheckDestroy: testAccCheckKongRouteDestroy,
 		Steps: []resource.TestStep{
 			{

@@ -9,7 +9,7 @@ import (
 func TestAccKongGlobalPluginStrict(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		ProtoV6ProviderFactories: testAccProviderFactories,
+		Providers: testAccProviders,
 		CheckDestroy: testAccCheckKongPluginDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -35,7 +35,7 @@ func TestAccKongGlobalPluginStrict(t *testing.T) {
 func TestAccKongGlobalPluginImplicitStrict(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		ProtoV6ProviderFactories: testAccProviderFactories,
+		Providers: testAccProviders,
 		CheckDestroy: testAccCheckKongPluginDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -61,7 +61,7 @@ func TestAccKongGlobalPluginImplicitStrict(t *testing.T) {
 func TestAccKongPluginImportConfigJsonStrict(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		ProtoV6ProviderFactories: testAccProviderFactories,
+		Providers: testAccProviders,
 		CheckDestroy: testAccCheckKongPluginDestroy,
 		Steps: []resource.TestStep{
 			{

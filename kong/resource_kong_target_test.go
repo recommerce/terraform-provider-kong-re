@@ -14,7 +14,7 @@ import (
 func TestAccKongTarget(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		ProtoV6ProviderFactories: testAccProviderFactories,
+		Providers: testAccProviders,
 		CheckDestroy: testAccCheckKongTargetDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -45,7 +45,7 @@ func TestAccKongTarget(t *testing.T) {
 func TestAccKongTargetDelete(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		ProtoV6ProviderFactories: testAccProviderFactories,
+		Providers: testAccProviders,
 		CheckDestroy: testAccCheckKongTargetDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -69,7 +69,7 @@ func TestAccKongTargetDelete(t *testing.T) {
 func TestAccKongTargetCreateAndRefreshFromNonExistentUpstream(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		ProtoV6ProviderFactories: testAccProviderFactories,
+		Providers: testAccProviders,
 		CheckDestroy: testAccCheckKongTargetDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -89,7 +89,7 @@ func TestAccKongTargetCreateAndRefreshFromNonExistentUpstream(t *testing.T) {
 func TestAccKongTargetImport(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
-		ProtoV6ProviderFactories: testAccProviderFactories,
+		Providers: testAccProviders,
 		CheckDestroy: testAccCheckKongTargetDestroy,
 		Steps: []resource.TestStep{
 			resource.TestStep{
