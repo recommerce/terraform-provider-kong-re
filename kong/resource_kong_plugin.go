@@ -4,8 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"log"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/kong/go-kong/kong"
@@ -27,6 +28,12 @@ func resourceKongPlugin() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
+			},
+			"instance_name": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "The name of the Kong instance for which to manage the plugin",
 			},
 			"consumer_id": {
 				Type:     schema.TypeString,
@@ -158,6 +165,10 @@ func resourceKongPluginRead(ctx context.Context, d *schema.ResourceData, meta in
 		if err != nil {
 			return diag.FromErr(err)
 		}
+		err = d.Set("instance_name", plugin.InstanceName)  // Add this line
+		if err != nil {
+		return diag.FromErr(err)
+		}
 
 		// We sync this property from upstream as a method to allow you to import a resource with the config tracked in
 		// terraform state. We do not track `config` as it will be a source of a perpetual diff.
@@ -236,6 +247,7 @@ func createKongPluginRequestFromResourceData(d *schema.ResourceData) (*kong.Plug
 	pluginRequest.Name = readStringPtrFromResource(d, "name")
 	pluginRequest.Enabled = readBoolPtrFromResource(d, "enabled")
 	pluginRequest.Tags = readStringArrayPtrFromResource(d, "tags")
+	pluginRequest.InstanceName = readStringPtrFromResource(d, "instance_name") // Add this line
 
 	if data, ok := d.GetOk("config_json"); ok {
 		var configJSON map[string]interface{}
